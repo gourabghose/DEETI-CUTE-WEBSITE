@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cheer Up 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500&family=Montserrat:wght@700&family=Poppins:wght@800&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+
+  <!-- confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    /* ---------- Base ---------- */
+    :root{
+      --bg1: #ffdde1;
+      --bg2: #ee9ca7;
+      --accent: #ff6f91;
+      --muted: #333;
+      --card-bg: rgba(255,255,255,0.14);
+      --glass: rgba(255,255,255,0.18);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      color:#fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+      scroll-behavior:smooth;
+    }
+
+    /* Section styling - full-screen feel */
+    section {
+      min-height: 100vh;
+      padding: 48px 20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      position:relative;
+    }
+    .inner {
+      width:100%;
+      max-width:900px;
+    }
+    /* Headings */
+h1 {
+  font-size: 3rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  color: #000; /* changed from white to black */
+  text-shadow: 2px 2px 8px rgba(255,255,255,0.3); /* subtle glow for contrast */
+}
+
+h2 {
+  font-size: 2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #000;
+  text-shadow: 1px 1px 6px rgba(255,255,255,0.25);
+}
+
+/* Paragraphs */
+p, .message-text {
+  font-size: 1.2rem;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  color: rgba(0,0,0,0.85);
+}
+
+/* Poem lines */
+.poem p {
+  font-size: 1.3rem;
+  font-family: 'Dancing Script', cursive;
+  font-weight: 500;
+  color: #000;
+  text-shadow: 1px 1px 6px rgba(255,255,255,0.25);
+}
+
+
+    /* Buttons */
+    .btn {
+      background:var(--accent);
+      border:none;
+      color:white;
+      padding:12px 22px;
+      border-radius:28px;
+      cursor:pointer;
+      font-weight:700;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: transform .18s ease, background .18s;
+      margin-top:18px;
+    }
+    .btn:hover{ transform: translateY(-3px) }
+    .btn-ghost {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+    }
+
+    /* hearts container */
+    .hearts { position:fixed; inset:0; pointer-events:none; z-index:2; }
+
+    .heart {
+      position:absolute;
+      font-size:22px;
+      opacity:0.95;
+      animation: floatUp linear forwards;
+    }
+    @keyframes floatUp {
+      to { transform: translateY(-120vh) rotate(45deg); opacity:0; }
+    }
+
+    /* cards */
+    .card {
+      background: var(--card-bg);
+      padding: 28px;
+      border-radius:18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      backdrop-filter: blur(6px);
+    }
+
+    /* gallery */
+    .gallery {
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+      gap:14px;
+      margin-top:18px;
+    }
+    .gallery .card {
+      padding:20px;
+      min-height:110px;
+    }
+
+
+ /* Simple photo gallery 
+.photo-wrap.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  justify-items: center;
+  margin-top: 16px;
+}
+
+.photo-wrap.gallery img {
+  width: 100%;
+  max-width: 260px;
+  border-radius: 12px;
+  border: 2px solid rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}*/
+ /* --- Polaroid Style --- */
+ 
+ .photo-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+  }
+  
+  .polaroid {
+    background: #fff;
+    padding: 10px 10px 25px 10px;
+    border-radius: 6px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 220px;
+    transform: rotate(-3deg);
+    opacity: 0;
+    transform: scale(0.9) rotate(-3deg);
+    transition: all 0.6s ease;
+  }
+  
+  .polaroid:nth-child(2) { transform: rotate(2deg); }
+  .polaroid:nth-child(3) { transform: rotate(-1deg); }
+  .polaroid:nth-child(4) { transform: rotate(3deg); }
+  .polaroid:nth-child(5) { transform: rotate(-2deg); }
+  
+  .polaroid img {
+    width: 100%;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  .polaroid:hover img {
+    transform: scale(1.05);
+  }
+  
+  .polaroid span {
+    font-size: 0.9em;
+    font-style: italic;
+    color: #333;
+  }
+  
+  /* --- Fade in animation when visible --- */
+  .polaroid.visible {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+
+
+
+    /* poem lines (hidden until reveal) */
+    .poem p {
+      opacity:0;
+      transform: translateY(10px);
+      transition: all .6s ease;
+      font-style: italic;
+      color: rgba(255,255,255,0.95);
+      margin:10px 0;
+    }
+
+    /* effort box */
+    .effort {
+      background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.06));
+      padding:18px;
+      border-radius:14px;
+      margin-top:14px;
+      color: rgba(255,255,255,0.95);
+    }
+
+    /* forgive area */
+    .forgive-actions { margin-top:16px; display:flex; gap:12px; justify-content:center; align-items:center; position:relative; }
+    .nobutton { background:#ffffff66; color:#333; width:110px; }
+
+    /* music button (floating) */
+    #music-btn {
+      position: fixed;
+      right:18px;
+      top:18px;
+      z-index:999;
+      width:58px; height:58px; border-radius:50%;
+      border:none;
+      background: #ff9a9e;
+      color:#fff;
+      font-size:22px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.2);
+      cursor:pointer;
+    }
+
+    /* small text */
+    .small { font-size:0.9rem; opacity:0.95; margin-top:10px; }
+
+    /* responsive */
+    @media (max-width:600px){
+      h1{font-size:1.6rem}
+      h2{font-size:1.2rem}
+      .card{ padding:18px }
+      .photo-wrap img{ width:260px }
+      .btn{ padding:10px 16px }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Music Control (floating) -->
+  <audio id="bg-music" loop>
+    <!-- CHANGE THIS SOURCE to your local filename if different -->
+    <source src="Tum Ho Toh Saiyaara 128 Kbps.mp3" type="audio/mpeg">
+    Your browser does not support audio.
+  </audio>
+  <button id="music-btn" aria-label="music">🎵</button>
+
+  <!-- floating hearts container -->
+  <div class="hearts" aria-hidden="true"></div>
+
+  <!-- ---------- LONG SCROLL SECTIONS ---------- -->
+
+<!-- 1. Landing -->
+<section id="landing" style="background: linear-gradient(135deg, #fbc2eb, #a6c1ee); padding: 60px 0;">
+    <div class="inner">
+      <div class="card hero-card" style="text-align:center; padding: 40px;">
+        <h1 style="font-size:2.8em; margin-bottom:10px;">Hey My Love 💕</h1>
+        <h2 style="font-weight:400; margin-bottom:20px;">I know you’re a little UPSET with me… but I made this with all my heart 🌸</h2>
+        
+        <!-- Optional space for a photo -->
+        <div style="margin:20px 0;">
+          <img src="6.jpeg" alt="Us Together" style="max-width:220px; border-radius:20px; box-shadow:0 6px 16px rgba(0,0,0,0.2);">
+        </div>
+  
+        <!-- Button -->
+        <button class="btn" id="btn-start" data-target="surprise" style="margin-top:20px;">Click for a Surprise 🎁</button>
+        <p class="small" style="margin-top:12px;">(Tap the button to start the music & reveal what’s inside ✨)</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- 2. Surprise -->
+  <section id="surprise" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb); padding: 60px 0; position:relative;">
+    <div class="inner">
+      <div class="card" style="text-align:center; padding:40px;">
+        <h1 style="font-size:2.5em; margin-bottom:10px;">You Make My World Brighter ✨</h1>
+        <p style="margin-bottom:20px;">Click on the little hearts below 💖 Each one holds a reason why you’re so special to me.</p>
+        
+        <!-- Optional space for another cute photo
+        <div style="margin:20px 0;">
+          <img src="another-photo.jpeg" alt="Cute Memory" style="max-width:200px; border-radius:15px; box-shadow:0 4px 12px rgba(0,0,0,0.25);">
+        </div>
+  
+        Heart container -->
+        <div id="heart-container" style="margin-top:20px;"></div>
+  
+        <!-- Button -->
+        <button class="btn btn-ghost" data-target="photo" style="margin-top:20px;">Want more? 😍</button>
+      </div>
+    </div>
+  
+    <!-- Floating hearts animation -->
+    <div class="floating-hearts" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;">
+      <span style="position:absolute; bottom:-20px; left:10%; font-size:24px; animation: floatUp 6s infinite ease-in-out;">💖</span>
+      <span style="position:absolute; bottom:-20px; left:30%; font-size:20px; animation: floatUp 7s infinite ease-in-out;">💕</span>
+      <span style="position:absolute; bottom:-20px; left:50%; font-size:28px; animation: floatUp 5s infinite ease-in-out;">💞</span>
+      <span style="position:absolute; bottom:-20px; left:70%; font-size:22px; animation: floatUp 6s infinite ease-in-out;">💗</span>
+      <span style="position:absolute; bottom:-20px; left:85%; font-size:26px; animation: floatUp 8s infinite ease-in-out;">💓</span>
+    </div>
+  </section>
+  
+  <!-- Floating hearts animation keyframes -->
+  <style>
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity:1; }
+    50% { transform: translateY(-50vh) scale(1.2); opacity:0.7; }
+    100% { transform: translateY(-100vh) scale(0.9); opacity:0; }
+  }
+  </style>
+  
+
+<!-- 3. Photo -->
+<section id="photo" style="background: linear-gradient(135deg, #f6d365, #fda085); padding: 40px 0;">
+    <div class="inner">
+      <div class="card">
+        <h2 style="margin-bottom:20px;">The Smiles We Shared ✨</h2>
+  
+        <div class="photo-wrap gallery">
+          <div class="polaroid">
+            <img src="1.jpeg" alt="Photo 1">
+            <span>That calm and cozy moment 💕 <br> When nothing else mattered, just us being together.</span>
+          </div>
+          <div class="polaroid">
+            <img src="2.jpeg" alt="Photo 2">
+            <span>Your silly face, my happy heart 😋 <br> A memory that always makes me laugh instantly.</span>
+          </div>
+          <div class="polaroid">
+            <img src="3.jpeg" alt="Photo 3">
+            <span>Crazy faces and endless fun 😂 <br> Who cares about the world when we have each other?</span>
+          </div>
+          <div class="polaroid">
+            <img src="4.jpeg" alt="Photo 4">
+            <span>Your brightest smile 💖 <br> It’s the kind of happiness I never want to let go of.</span>
+          </div>
+          <div class="polaroid">
+            <img src="5.jpeg" alt="Photo 5">
+            <span>Forever us, always 🌸 <br> Through laughter, love, and every little adventure ahead.</span>
+          </div>
+        </div>
+  
+        <p class="small" style="margin-top:20px; color: rgba(0,0,0,0.8);">
+          (Every click holds a piece of our story 💖)
+        </p>
+        <button class="btn" data-target="message">Next 💕</button>
+      </div>
+    </div>
+  </section>
+  
+  
+  <script>
+  // Reveal photos on scroll
+  const photos = document.querySelectorAll('.polaroid');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('visible');
+      }
+    });
+  });
+  photos.forEach(p => observer.observe(p));
+  </script>
+  
+  
+
+  <!-- 4. Personal Message -->
+  <section id="message" style="background: linear-gradient(135deg, #84fab0, #8fd3f4);">
+    <div class="inner">
+      <div class="card">
+        <h2>From Me To You 💌</h2>
+        <p class="message-text">
+          I’m really sorry for making you upset. I put my thoughts into this little surprise because you mean so much to me.
+          Every line, heart and color here was chosen thinking of you. Please read my poem next 🌹
+        </p>
+        <button class="btn btn-ghost" data-target="poem">Read My Poem 🌹</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Poem -->
+<section id="poem" style="background: linear-gradient(135deg, #fbd3e9, #bb377d);">
+    <div class="inner">
+      <div class="card">
+        <h2>My Poem For You 🌹</h2>
+        <div id="poem-lines" class="poem" style="margin-top:12px; text-align:left; max-width:720px; margin-left:auto; margin-right:auto;">
+          <p>You're the sunrise that wakes my heart each day,</p>
+          <p>Your laugh’s sweet melody drives the clouds away.</p>
+          <p>I stumble, I fumble, yet learn to be true,</p>
+          <p>Each effort I make is a promise to you.</p>
+          <p>For you, my love, I give all that I own,</p>
+          <p>In your gentle embrace, I’ve found my home.</p>
+          <p>Tomorrow at three, my soul will find rest,</p>
+          <p>Just say yes, love, and I'll give you my best. 💖</p>
+        </div>
+        <button class="btn" data-target="effort">Next ✨</button>
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- 6. Effort Reminder -->
+  <section id="effort" style="background: linear-gradient(135deg, #c9ffbf, #ffafbd);">
+    <div class="inner">
+      <div class="card">
+        <h2>Do You Realize? 😘</h2>
+        <div class="effort">
+          <p>I put a lot of time and real effort into this — many hours went into making something just for you. </p>
+          <p>You're truly lucky that I make these for you — and after my exams I’ll make many more (I can't do much right now because of studies 😅).</p>
+        </div>
+        <button class="btn btn-ghost" data-target="forgive">Forgive Me? 🥺</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Forgiveness -->
+  <section id="forgive" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">
+    <div class="inner">
+      <div class="card">
+        <h2>Will you forgive me? 🥺</h2>
+        <div class="forgive-actions">
+          <button class="btn primary" id="yes-btn">YES 💕</button>
+          <button class="btn nobutton" id="no-btn">NO 🙈</button>
+        </div>
+        <p class="small">(If yes — I’ll be waiting at my place tomorrow at <strong>3:00 PM</strong> 💖)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- End / final quick note -->
+  <section id="final" style="background: linear-gradient(135deg, #e0c3fc, #8ec5fc);">
+    <div class="inner">
+      <div class="card">
+        <h2>Thank you 💖</h2>
+        <p id="final-text">Thanks for being amazing — see you tomorrow at 3 PM. Can't wait to make you smile in person 🥰</p>
+        <button class="btn" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to Top ⤴️</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- footer -->
+  <footer style="text-align:center;padding:14px;color:rgba(255,255,255,0.95);font-size:0.9rem;">
+    Made with ❤️ and lots of effort — just for you.
+  </footer>
+
+  <!-- ---------- JS ---------- -->
+  <script>
+    // ---------- Helpers ----------
+    const music = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+    const heartsContainer = document.querySelector('.hearts');
+
+    // spawn floating hearts periodically
+    setInterval(() => {
+      const el = document.createElement('div');
+      el.className = 'heart';
+      el.textContent = Math.random() < 0.4 ? '💖' : (Math.random()<0.7 ? '❤️' : '✨');
+      // random horizontal position
+      el.style.left = (5 + Math.random()*90) + 'vw';
+      // random size
+      const size = 14 + Math.random()*28;
+      el.style.fontSize = size + 'px';
+      // random duration
+      const dur = 4 + Math.random()*4;
+      el.style.animationDuration = dur + 's';
+      // small rotate
+      el.style.transform = `translateY(0) rotate(${Math.random()*60 - 30}deg)`;
+      heartsContainer.appendChild(el);
+      // remove after animation
+      setTimeout(()=> el.remove(), (dur*1000)+200);
+    }, 450);
+
+    // ---------- Scroll helper (buttons with data-target) ----------
+    document.querySelectorAll('[data-target]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const tgt = btn.getAttribute('data-target');
+        // If start button, also start music (user gesture)
+        if(btn.id === 'btn-start') {
+          // Play music on user gesture — browsers allow this
+          music.play().catch(err => console.warn('play blocked', err));
+          // set music button icon
+          musicBtn.textContent = '🎵';
+        }
+        const el = document.getElementById(tgt);
+        if(el) el.scrollIntoView({behavior:'smooth'});
+      });
+    });
+
+    // ---------- Surprise hearts clickable reveal words ----------
+    const words = ["Smile 😊", "Love 💕", "Happiness 🌸", "Forever 💖", "Magic ✨", "Warmth ❤️"];
+    const heartContainer = document.getElementById('heart-container');
+    // create a few heart buttons
+    for(let i=0;i<6;i++){
+      const hb = document.createElement('button');
+      hb.className = 'btn-ghost';
+      hb.style.margin = '8px';
+      hb.style.borderRadius = '999px';
+      hb.textContent = '💗';
+      hb.addEventListener('click', () => {
+        hb.textContent = words[i % words.length];
+        hb.disabled = true;
+        hb.style.opacity = '0.95';
+      });
+      heartContainer.appendChild(hb);
+    }
+
+    // ---------- Music button toggle ----------
+    let playing = false;
+    musicBtn.addEventListener('click', () => {
+      if(!playing){
+        music.play().then(()=> {
+          playing = true;
+          musicBtn.textContent = '🎵';
+        }).catch(err=>{
+          // possibly blocked — unmute trick on click
+          music.muted = false;
+          music.play().then(()=> { playing = true; musicBtn.textContent = '🎵'; })
+          .catch(()=> { musicBtn.textContent = '🔈'; });
+        });
+      } else {
+        music.pause();
+        playing = false;
+        musicBtn.textContent = '🔇';
+      }
+    });
+
+    // If user clicks anywhere and music is paused but loaded, allow it to play (friendly)
+    document.body.addEventListener('click', function onFirst() {
+      // do not auto-play randomly: we respect only start button or music button
+      // remove listener so it doesn't interfere
+      document.body.removeEventListener('click', onFirst);
+    });
+
+    // ---------- Poem reveal: watch poem section and reveal lines one-by-one ----------
+    const poemSection = document.getElementById('poem');
+    const poemLines = document.querySelectorAll('#poem-lines p');
+    const poemObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting) {
+          poemLines.forEach((p, i) => {
+            setTimeout(() => {
+              p.style.opacity = 1;
+              p.style.transform = 'translateY(0)';
+            }, i * 700);
+          });
+          poemObserver.unobserve(poemSection);
+        }
+      });
+    }, { threshold: 0.35 });
+    if(poemSection) poemObserver.observe(poemSection);
+
+    // ---------- NO button run-away fun ----------
+    const noBtn = document.getElementById('no-btn');
+    function moveNoButton() {
+      const padding = 20;
+      // calculate area within viewport minus button size
+      const maxX = Math.max(window.innerWidth - 120, 120);
+      const maxY = Math.max(window.innerHeight - 80, 80);
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = x + 'px';
+      noBtn.style.top = y + 'px';
+    }
+    if(noBtn){
+      // move on mouseover and on touchstart (mobile)
+      noBtn.addEventListener('mouseover', moveNoButton);
+      noBtn.addEventListener('touchstart', moveNoButton);
+      // also move occasionally to make it cuter
+      setInterval(()=> {
+        if(Math.random() < 0.06) moveNoButton();
+      }, 1000);
+    }
+
+    // ---------- YES button: confetti + appointment message + scroll to final ----------
+    const yesBtn = document.getElementById('yes-btn');
+    yesBtn.addEventListener('click', () => {
+      // confetti
+      confetti({
+        particleCount: 220,
+        spread: 130,
+        origin: { y: 0.6 }
+      });
+      // update final text and scroll
+      const finalText = document.getElementById('final-text');
+      finalText.textContent = "Yay! You forgave me 💕 I'll wait at my place tomorrow at 3:00 PM. Can't wait to see you 🥰";
+      // small sound cue (if you want): optional beep (commented out)
+      // new Audio('beep.mp3').play();
+      document.getElementById('final').scrollIntoView({behavior:'smooth'});
+    });
+
+    // ---------- Accessibility: keyboard nav (optional) ----------
+    document.addEventListener('keydown', (e) => {
+      if(e.key === 'Home') window.scrollTo({top:0,behavior:'smooth'});
+      if(e.key === 'End') window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+    });
+
+    // ---------- Small: make sure the music element is ready (preload hint) ----------
+    // If you want preloading: music.preload = 'auto';
+    // music.preload = 'auto';
+
+    // ---------- TIP: If music not playing, check console - common issues:
+    // 1) filepath wrong (ensure the mp3 is in same folder)
+    // 2) user hasn't clicked start (btn-start) or music button (music-btn)
+  </script>
+</body>
+</html>
